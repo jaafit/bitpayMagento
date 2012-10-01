@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<config>
+   <sections>
+		<payment>
+			<groups>
+				<Bitcoins translate="label" module="paygate">
+					<label>Bitcoins</label>
+					<sort_order>670</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>1</show_in_website>
+					<show_in_store>0</show_in_store>
+					<fields>
+						<active translate="label">
+							<label>Enabled</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>1</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</active>
+						
+						<title translate="label">
+							<label>Title</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>1</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</title>
+						
+						<api_key translate="label">
+							<label>API key</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>2</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</api_key>
+						
+						<speed translate="label">
+							<label>Transaction Speed</label>
+							<frontend_type>select</frontend_type>
+							<source_model>bitpay_bitcoins_model_source_speed</source_model>
+							<sort_order>5</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</speed>
+						
+						<currencies translate="label">
+							<label>Currencies accepted by bit-pay.com</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>6</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</currencies>
+						
+					</fields>
+				</Bitcoins>
+			</groups>
+		</payment>
+	</sections>
+</config>

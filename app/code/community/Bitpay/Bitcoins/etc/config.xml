@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<config>
+	<frontend>
+        <routers>
+            <bitpay_callback>
+                <use>standard</use>
+                <args>
+                    <module>Bitpay_Bitcoins</module>
+                    <frontName>bitpay_callback</frontName>
+                </args>
+            </bitpay_callback>
+        </routers>
+    </frontend>
+
+	<modules>
+	   <Bitpay_Bitcoins>
+<!-- declare module's version information for database updates -->
+		  <version>0.1.0</version>
+	   </Bitpay_Bitcoins>
+	</modules>
+ 
+	<global>
+<!-- IMPORTANT: if you use your own namespace (i.e. Bitpay) you also have to declare blocks group for new module. See topic: http://www.magentocommerce.com/boards/viewthread/22416/#t102732 -->
+	<blocks>
+		<Bitcoins>
+			<class>Bitpay_Bitcoins_Block</class>
+		</Bitcoins>
+	</blocks>
+ 
+<!-- declare model group for new module -->
+		<models>
+<!-- model group alias to be used in Mage::getModel('Bitcoins/...') -->
+			<Bitcoins>
+<!-- base class name for the model group -->
+				<class>Bitpay_Bitcoins_Model</class>
+			</Bitcoins>
+		</models>
+ 
+<!-- declare resource setup for new module -->
+		<resources>
+<!-- resource identifier -->
+			<Bitcoins_setup>
+<!-- specify that this resource is a setup resource and used for upgrades -->
+				<setup>
+<!-- which module to look for install/upgrade files in -->
+					<module>Bitpay_Bitcoins</module>
+				</setup>
+<!-- specify database connection for this resource -->
+				<connection>
+<!-- do not create new connection, use predefined core setup connection -->
+					<use>core_setup</use>
+				</connection>
+			</Bitcoins_setup>
+			<Bitcoins_write>
+				<connection>
+				  <use>core_write</use>
+				</connection>
+			</Bitcoins_write>
+			<Bitcoins_read>
+			   <connection>
+				<use>core_read</use>
+			  </connection>
+			</Bitcoins_read>
+		</resources>
+	</global>
+ 
+<!-- declare default configuration values for this module -->
+	<default>
+<!-- 'payment' configuration section (tab) -->
+		<payment>
+<!-- 'Bitcoins' configuration group (fieldset) -->
+			<Bitcoins>
+<!-- by default this payment method is active -->
+				<active>1</active>
+<!-- model to handle logic for this payment method -->
+				<model>Bitcoins/paymentMethod</model>
+<!-- default title for payment checkout page and order view page -->
+				<title>Bitcoins</title>
+				
+				<speed>low</speed>
+				
+				<currencies>BTC, USD, EUR, GBP, AUD, BGN, BRL, CAD, CHF, CNY, CZK, DKK, HKD, HRK, HUF, IDR, ILS, INR, JPY, KRW, LTL, LVL, MXN, MYR, NOK, NZD, PHP, PLN, RON, RUB, SEK, SGD, THB, TRY, ZAR</currencies>
+				
+				<payment_action>authorize</payment_action>
+ 
+			</Bitcoins>
+		 </payment>
+	</default>
+</config>
