@@ -27,6 +27,7 @@ class Bitpay_Bitcoins_IndexController extends Mage_Core_Controller_Front_Action 
 					break;
 					
 				case 'confirmed':							
+				case 'complete':
 					$invoices = $order->getInvoiceCollection();
 					foreach($invoices as $i)
 						$i->pay()
