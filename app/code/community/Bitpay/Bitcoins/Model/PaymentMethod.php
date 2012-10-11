@@ -81,13 +81,8 @@ class Bitpay_Bitcoins_Model_PaymentMethod extends Mage_Payment_Model_Method_Abst
  
 	function debuglog($contents)
 	{
-		$file = 'lib/bitpay/log.txt';
-		file_put_contents($file, date('m-d H:i:s').": \n", FILE_APPEND);
-		if (is_array($contents))
-			foreach($contents as $k => $v)
-				file_put_contents($file, $k.': '.$v."\n", FILE_APPEND);
-		else
-			file_put_contents($file, $contents."\n", FILE_APPEND);
+		file_put_contents('lib/bitpay/log.txt', "\n".date('m-d H:i:s').": ", FILE_APPEND);
+		file_put_contents('lib/bitpay/log.txt', $contents, FILE_APPEND);
 	}
 	
 	public function canUseCheckout()
@@ -129,11 +124,11 @@ class Bitpay_Bitcoins_Model_PaymentMethod extends Mage_Payment_Model_Method_Abst
 			'transactionSpeed' => $speed,
 			'apiKey' => $apiKey,
 			);
-		$this->debuglog('creating bitpay invoice');
-		$this->debuglog($options);
+		//$this->debuglog($options);
 		$invoice = bpCreateInvoice($orderId, $amount, $orderId, $options);
-		$this->debuglog($invoice);
+		//$this->debuglog($invoice);
 		
+		$payment->setIsTransactionPending(true); // status will be PAYMENT_REVIEW instead of PROCESSING
 			
 		if (array_key_exists('error', $invoice)) 
 		{
@@ -144,7 +139,6 @@ class Bitpay_Bitcoins_Model_PaymentMethod extends Mage_Payment_Model_Method_Abst
 		}
 		else
 		{
-			$this->debuglog('created bitpay invoice,  setting redirect '.$invoice['url']);
 			$invoiceId = Mage::getModel('sales/order_invoice_api')->create($orderId, array());
 			Mage::getSingleton('customer/session')->setRedirectUrl($invoice['url']);
 		}
@@ -155,7 +149,6 @@ class Bitpay_Bitcoins_Model_PaymentMethod extends Mage_Payment_Model_Method_Abst
 	public function getOrderPlaceRedirectUrl()
 	{
 		$url = Mage::getSingleton('customer/session')->getRedirectUrl();
-		$this->debuglog('returning redirect '.$url);
 		return $url;
 	}
 

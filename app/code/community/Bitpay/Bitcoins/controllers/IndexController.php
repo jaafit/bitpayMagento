@@ -4,13 +4,8 @@ class Bitpay_Bitcoins_IndexController extends Mage_Core_Controller_Front_Action 
 
 	function debuglog($contents)
 	{
-		$file = 'lib/bitpay/log.txt';
-		file_put_contents($file, date('m-d H:i').": \n", FILE_APPEND);
-		if (is_array($contents))
-			foreach($contents as $k => $v)
-				file_put_contents($file, $k.': '.$v."\n", FILE_APPEND);
-		else
-			file_put_contents($file, $contents."\n", FILE_APPEND);
+		file_put_contents('lib/bitpay/log.txt', "\n".date('m-d H:i:s').": ", FILE_APPEND);
+		file_put_contents('lib/bitpay/log.txt', $contents, FILE_APPEND);
 	}
 
     public function indexAction() {
@@ -22,15 +17,21 @@ class Bitpay_Bitcoins_IndexController extends Mage_Core_Controller_Front_Action 
 			$this->debuglog("bitpay callback error: $response");
 		else {
 			$orderId = $response['posData'];
+			$order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
+			$this->debuglog($response['status']);
+
 			switch($response['status'])
 			{
+				case 'paid':
+					$order->setState($order::STATE_PROCESSING, true)->save();
+					break;
+					
 				case 'confirmed':							
-					$order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
 					$invoices = $order->getInvoiceCollection();
 					foreach($invoices as $i)
 						$i->pay()
 							->save();
-					$order->setState($order::STATE_PROCESSING)
+					$order->setState($order::STATE_PROCESSING, true)
 						->save();
 					break;
 				
