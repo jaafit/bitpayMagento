@@ -119,6 +119,8 @@ function bpGetInvoice($invoiceId, $apiKey=false) {
 	if (is_string($response))
 		return $response; // error
 	$response['posData'] = json_decode($response['posData'], true);
+	$response['posData'] = $response['posData']['posData'];
+
 	return $response;	
 }
 

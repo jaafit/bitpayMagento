@@ -1,0 +1,9 @@
+<?php $url = $this->GetIframeUrl(); ?>
+
+<?php if ($url == 'paid'): ?>
+	Order payment received.  Place Order to complete.
+<?php else: if ($url): ?>
+	<iframe src=<? echo $url; ?> width="600" height="150"> </iframe>
+<?php else: ?>
+	Error creating invoice.  Please try again or try another payment solution.
+<?php endif; endif; ?>

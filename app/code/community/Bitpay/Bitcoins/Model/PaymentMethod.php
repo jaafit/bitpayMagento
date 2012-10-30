@@ -72,19 +72,16 @@ class Bitpay_Bitcoins_Model_PaymentMethod extends Mage_Payment_Model_Method_Abst
 	 */
 	protected $_canSaveCc = false;
 	
+	//protected $_formBlockType = 'bitcoins/form';
+	//protected $_infoBlockType = 'bitcoins/info';
+	
 	function canUseForCurrency($currencyCode)
 	{		
 		$currencies = Mage::getStoreConfig('payment/Bitcoins/currencies');
 		$currencies = array_map('trim', explode(',', $currencies));
 		return array_search($currencyCode, $currencies) !== false;
 	}
- 
-	function debuglog($contents)
-	{
-		file_put_contents('lib/bitpay/log.txt', "\n".date('m-d H:i:s').": ", FILE_APPEND);
-		file_put_contents('lib/bitpay/log.txt', $contents, FILE_APPEND);
-	}
-	
+ 	
 	public function canUseCheckout()
     {
 		
@@ -107,50 +104,19 @@ class Bitpay_Bitcoins_Model_PaymentMethod extends Mage_Payment_Model_Method_Abst
 
 	public function authorize(Varien_Object $payment, $amount) 
 	{
-		include 'lib/bitpay/bp_lib.php';		
-
-		$apiKey = Mage::getStoreConfig('payment/Bitcoins/api_key');
-		$speed = Mage::getStoreConfig('payment/Bitcoins/speed');
-		
-		$order = $payment->getOrder();
-		$orderId = $order->getIncrementId();  
-		$options = array(
-			//'physical' => ,
-			'currency' => $order->getBaseCurrencyCode(),
-			'buyerName' => $order->getCustomerFirstname().' '.$order->getCustomerLastname(),			
-			'fullNotifications' => 'true',
-			'notificationURL' => Mage::getUrl('bitpay_callback'),
-			'redirectURL' => Mage::getUrl('customer/account'),
-			'transactionSpeed' => $speed,
-			'apiKey' => $apiKey,
-			);
-		//$this->debuglog($options);
-		$invoice = bpCreateInvoice($orderId, $amount, $orderId, $options);
-		//$this->debuglog($invoice);
-		
-		$payment->setIsTransactionPending(true); // status will be PAYMENT_REVIEW instead of PROCESSING
-			
-		if (array_key_exists('error', $invoice)) 
+		$quoteId = $payment->getOrder()->getQuoteId();
+		$ipn = Mage::getModel('Bitcoins/ipn');
+		if (!$ipn->GetQuotePaid($quoteId))
 		{
-			Mage::log('Error creating bitpay invoice');
-			$this->debuglog('error creating bitpay invoice');
-			$this->debuglog($invoice['error']);
-			Mage::throwException("Error creating bit-pay invoice.  Please try again or use another payment option.");
+			Mage::throwException("Order not paid for.  Please pay first and then Place your Order.");
 		}
-		else
-		{
-			$invoiceId = Mage::getModel('sales/order_invoice_api')->create($orderId, array());
-			Mage::getSingleton('customer/session')->setRedirectUrl($invoice['url']);
+		else if (!$ipn->GetQuoteComplete($quoteId))
+		{			
+			// order status will be PAYMENT_REVIEW instead of PROCESSING
+			$payment->setIsTransactionPending(true); 
 		}
-
+		
 		return $this;
 	}
-	
-	public function getOrderPlaceRedirectUrl()
-	{
-		$url = Mage::getSingleton('customer/session')->getRedirectUrl();
-		return $url;
-	}
-
 }
 ?>

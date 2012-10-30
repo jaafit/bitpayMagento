@@ -11,6 +11,8 @@ $bpOptions['SSLkey'] = '';
 
 $bpOptions['secret'] = '';
 
+$bpOptions['verifyPos'] = true;
+
 $bpOptions['notificationEmail'] = '';
 
 $bpOptions['notificationURL'] = '';
