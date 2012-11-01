@@ -11,7 +11,8 @@ class Bitpay_Bitcoins_Model_Ipn extends Mage_Core_Model_Abstract
 	function Record($invoice)
 	{
 		return $this
-			->setQuoteId($invoice['posData'])
+			->setQuoteId(isset($invoice['posData']['quoteId']) ? $invoice['posData']['quoteId'] : NULL)
+			->setOrderId(isset($invoice['posData']['orderId']) ? $invoice['posData']['orderId'] : NULL)
 			->setInvoiceId($invoice['id'])
 			->setUrl($invoice['url'])
 			->setStatus($invoice['status'])

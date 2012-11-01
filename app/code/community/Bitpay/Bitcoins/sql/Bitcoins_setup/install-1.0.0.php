@@ -7,6 +7,7 @@ $installer->run("
 CREATE TABLE IF NOT EXISTS `bitpay_ipns` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `quote_id` int(10) unsigned default NULL,
+  `order_id` int(10) unsigned default NULL,
   `invoice_id` varchar(200) NOT NULL,
   `url` varchar(400) NOT NULL,
   `status` varchar(20) NOT NULL,

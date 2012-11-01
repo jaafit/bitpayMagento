@@ -62,10 +62,10 @@ function bpCreateInvoice($orderId, $price, $posData, $options = array()) {
 	
 	$options = array_merge($bpOptions, $options);	// $options override any options found in bp_options.php
 	
-	$options['posData'] = '{"posData": "' . $posData . '"';
-	if ($bpOptions['verifyPos']) // if desired, a hash of the POS data is included to verify source in the callback
-		$options['posData'].= ', "hash": "' . crypt($posData, $options['apiKey']).'"';
-	$options['posData'].= '}';	
+	$pos = array('posData' => $posData);
+	if ($bpOptions['verifyPos'])
+		$pos['hash'] = crypt(serialize($posData), $options['apiKey']);
+	$options['posData'] = json_encode($pos);
 	
 	$options['orderID'] = $orderId;
 	$options['price'] = $price;
@@ -102,7 +102,7 @@ function bpVerifyNotification($apiKey = false) {
 		return 'no posData';
 		
 	$posData = json_decode($json['posData'], true);
-	if($bpOptions['verifyPos'] and $posData['hash'] != crypt($posData['posData'], $apiKey)) 
+	if($bpOptions['verifyPos'] and $posData['hash'] != crypt(serialize($posData['posData']), $apiKey)) 
 		return 'authentication failed (bad hash)';
 	$json['posData'] = $posData['posData'];
 		

@@ -13,21 +13,25 @@ class Bitpay_Bitcoins_IndexController extends Mage_Core_Controller_Front_Action 
 		if (is_string($invoice))
 			Mage::log("bitpay callback error: $invoice");
 		else {
-			$quoteId = $invoice['posData'];
-			$bitpayIpn = Mage::getModel('Bitcoins/ipn');
+			// get the order
+			if (isset($invoice['posData']['quoteId'])) {
+				$quoteId = $invoice['posData']['quoteId'];
+				$order = Mage::getModel('sales/order')->load($quoteId, 'quote_id');
+			}
+			else {
+				$orderId = $invoice['posData']['orderId'];
+				$order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
+			}
 			
 			// save the ipn so that we can find it when the user clicks "Place Order"
-			$bitpayIpn->Record($invoice); 		
+			Mage::getModel('Bitcoins/ipn')->Record($invoice); 		
 			
 			// update the order if it exists already
-			$order = Mage::getModel('sales/order')->load($quoteId, 'quote_id');
 			if ($order->getId())
-				switch($invoice['status'])
-				{					
+				switch($invoice['status']) {
 				case 'confirmed':							
 				case 'complete':
-					$invoices = $order->getInvoiceCollection();
-					foreach($invoices as $i)
+					foreach($order->getInvoiceCollection() as $i)
 						$i->pay()
 							->save();
 					$order->setState($order::STATE_PROCESSING, true)

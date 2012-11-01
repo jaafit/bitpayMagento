@@ -104,6 +104,16 @@ class Bitpay_Bitcoins_Model_PaymentMethod extends Mage_Payment_Model_Method_Abst
 
 	public function authorize(Varien_Object $payment, $amount) 
 	{
+		$iframe = Mage::getStoreConfig('payment/Bitcoins/iframe');
+		if ($iframe)
+			return $this->CheckForPayment($payment);
+		else
+			return $this->CreateInvoiceAndRedirect($payment, $amount);
+
+	}
+	
+	function CheckForPayment($payment)
+	{
 		$quoteId = $payment->getOrder()->getQuoteId();
 		$ipn = Mage::getModel('Bitcoins/ipn');
 		if (!$ipn->GetQuotePaid($quoteId))
@@ -118,5 +128,49 @@ class Bitpay_Bitcoins_Model_PaymentMethod extends Mage_Payment_Model_Method_Abst
 		
 		return $this;
 	}
+	
+	function CreateInvoiceAndRedirect($payment, $amount)
+	{
+		include 'lib/bitpay/bp_lib.php';		
+
+		$apiKey = Mage::getStoreConfig('payment/Bitcoins/api_key');
+		$speed = Mage::getStoreConfig('payment/Bitcoins/speed');
+
+		$order = $payment->getOrder();
+		$orderId = $order->getIncrementId();  
+		$options = array(
+			'currency' => $order->getBaseCurrencyCode(),
+			'buyerName' => $order->getCustomerFirstname().' '.$order->getCustomerLastname(),			
+			'fullNotifications' => 'true',
+			'notificationURL' => Mage::getUrl('bitpay_callback'),
+			'redirectURL' => Mage::getUrl('customer/account'),
+			'transactionSpeed' => $speed,
+			'apiKey' => $apiKey,
+			);
+		$invoice = bpCreateInvoice($orderId, $amount, array('orderId' => $orderId), $options);
+
+		$payment->setIsTransactionPending(true); // status will be PAYMENT_REVIEW instead of PROCESSING
+
+		if (array_key_exists('error', $invoice)) 
+		{
+			Mage::log('Error creating bitpay invoice');
+			Mage::log($invoice['error']);
+			Mage::throwException("Error creating bit-pay invoice.  Please try again or use another payment option.");
+		}
+		else
+		{
+			$invoiceId = Mage::getModel('sales/order_invoice_api')->create($orderId, array());
+			Mage::getSingleton('customer/session')->setRedirectUrl($invoice['url']);
+		}
+
+		return $this;
+	}
+
+	public function getOrderPlaceRedirectUrl()
+	{
+		$url = Mage::getSingleton('customer/session')->getRedirectUrl();
+		return $url;
+	}
+	
 }
 ?>
