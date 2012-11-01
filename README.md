@@ -25,11 +25,11 @@ Configuration
 	b. Enter your API key 
 	c. Select a transaction speed.  The high speed will send a confirmation as soon as a transaction is received in the bitcoin network (usually a few seconds).  A medium speed setting will typically take 10 minutes.  The low speed setting usually takes around 1 hour.  See the bitpay.com merchant documentation for a full description of the transaction speed settings.
 	d. Verify that the currencies option includes your store's currencies.  If it doesn't, check bitpay.com to see if they support your desired currency.  If so, you may simply add the currency to the list using this setting.  If not, you will not be able to use that currency.  
-	e. (optional) Adjust the Iframe setting.  Yes means that payment instructions are embedded in the checkout page.  No means that the buyer will be redirected to bitpay.com to pay their order.
+	e. (optional) Adjust the "Fullscreen Invoice" setting.  "No" means that payment instructions are embedded in the checkout page.  "Yes" means that the buyer will be redirected to bitpay.com to pay their order.
 
 Usage
 -----
-When a shopper chooses the Bitcoin payment method, they will be presented with an order summary as the next step (prices are shown in whatever currency they've selected for shopping).  If the Iframe option is enabled, they can pay for their order using the address shown on the screen.  Otherwise they will place their order and be redirected to bitpay.com to pay.
+When a shopper chooses the Bitcoin payment method, they will be presented with an order summary as the next step (prices are shown in whatever currency they've selected for shopping).  If the fullscreen option is disabled, they can pay for their order using the address shown on the screen.  Otherwise they will place their order and be redirected to bitpay.com to pay.
 
 The order status in the admin panel will be "Processing" if payment has been confirmed. 
 

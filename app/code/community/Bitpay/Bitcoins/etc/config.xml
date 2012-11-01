@@ -78,7 +78,7 @@
 				<model>Bitcoins/paymentMethod</model>
 				<title>Bitcoins</title>
 				<speed>low</speed>
-				<iframe>1</iframe>
+				<fullscreen>0</fullscreen>
 				<currencies>BTC, USD, EUR, GBP, AUD, BGN, BRL, CAD, CHF, CNY, CZK, DKK, HKD, HRK, HUF, IDR, ILS, INR, JPY, KRW, LTL, LVL, MXN, MYR, NOK, NZD, PHP, PLN, RON, RUB, SEK, SGD, THB, TRY, ZAR</currencies>
 				<payment_action>authorize</payment_action>
 			</Bitcoins>

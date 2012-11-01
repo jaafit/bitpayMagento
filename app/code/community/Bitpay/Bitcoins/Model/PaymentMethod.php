@@ -104,8 +104,7 @@ class Bitpay_Bitcoins_Model_PaymentMethod extends Mage_Payment_Model_Method_Abst
 
 	public function authorize(Varien_Object $payment, $amount) 
 	{
-		$iframe = Mage::getStoreConfig('payment/Bitcoins/iframe');
-		if ($iframe)
+		if (!Mage::getStoreConfig('payment/Bitcoins/fullscreen'))
 			return $this->CheckForPayment($payment);
 		else
 			return $this->CreateInvoiceAndRedirect($payment, $amount);
@@ -168,8 +167,10 @@ class Bitpay_Bitcoins_Model_PaymentMethod extends Mage_Payment_Model_Method_Abst
 
 	public function getOrderPlaceRedirectUrl()
 	{
-		$url = Mage::getSingleton('customer/session')->getRedirectUrl();
-		return $url;
+		if (Mage::getStoreConfig('payment/Bitcoins/fullscreen'))
+			return Mage::getSingleton('customer/session')->getRedirectUrl();
+		else
+			return '';
 	}
 	
 }
