@@ -25,12 +25,13 @@ Configuration
 	b. Enter your API key 
 	c. Select a transaction speed.  The high speed will send a confirmation as soon as a transaction is received in the bitcoin network (usually a few seconds).  A medium speed setting will typically take 10 minutes.  The low speed setting usually takes around 1 hour.  See the bitpay.com merchant documentation for a full description of the transaction speed settings.
 	d. Verify that the currencies option includes your store's currencies.  If it doesn't, check bitpay.com to see if they support your desired currency.  If so, you may simply add the currency to the list using this setting.  If not, you will not be able to use that currency.  
+	e. (optional) Adjust the Iframe setting.  Yes means that payment instructions are embedded in the checkout page.  No means that the buyer will be redirected to bitpay.com to pay their order.
 
 Usage
 -----
-When a shopping chooses the Bitcoin payment method, they will be presented with an order summary as the next step (prices are shown in whatever currency they've selected for shopping).  Upon receiving their order, the system takes the shopper to a bitpay.com invoice where the user is presented with bitcoin payment instructions.  Once payment is received, a link is presented to the shopper that will take them to their "My Account" page.
+When a shopper chooses the Bitcoin payment method, they will be presented with an order summary as the next step (prices are shown in whatever currency they've selected for shopping).  If the Iframe option is enabled, they can pay for their order using the address shown on the screen.  Otherwise they will place their order and be redirected to bitpay.com to pay.
 
-In your Admin control panel, you can see the invoices associated with each order made with Bitcoins.  The invoice will tell you whether payment has been received.  
+The order status in the admin panel will be "Processing" if payment has been confirmed. 
 
 Note: This extension does not provide a means of automatically pulling a current BTC exchange rate for presenting BTC prices to shoppers.
 
@@ -41,3 +42,6 @@ Version 1
 
 Version 2
   - Now supports API keys instead of SSL files.  Tested against 1.7.0.2.
+ 
+Version 3
+  - Now shows an iframe on the checkout page instead of redirecting to bitpay.com.
