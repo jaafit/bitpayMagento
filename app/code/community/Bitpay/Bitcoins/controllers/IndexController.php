@@ -34,7 +34,7 @@ class Bitpay_Bitcoins_IndexController extends Mage_Core_Controller_Front_Action 
 					foreach($order->getInvoiceCollection() as $i)
 						$i->pay()
 							->save();
-					$order->setState($order::STATE_PROCESSING, true)
+					$order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true)
 						->save();
 					break;
 				}				
