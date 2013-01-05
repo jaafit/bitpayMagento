@@ -1,6 +1,7 @@
 <?php 
 $url = $this->GetIframeUrl();
 switch($url){
+	case 'notbitpay': break; // customer is using another payment method
 	case 'paid':
 		echo 'Order payment received.  Place Order to complete.'; break;
 	case 'disabled':

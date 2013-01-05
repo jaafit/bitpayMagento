@@ -10,7 +10,15 @@ class Bitpay_Bitcoins_Block_Iframe extends Mage_Checkout_Block_Onepage_Payment
 	
 	// create an invoice and return the url so that iframe.phtml can display it
 	public function GetIframeUrl()
-	{			
+	{	
+		// are they using bitpay?
+		if (!($quote = Mage::getSingleton('checkout/session')->getQuote()) 
+			or !($payment = $quote->getPayment())
+			or !($instance = $payment->getMethodInstance())
+			or ($instance->getCode() != 'Bitcoins'))
+			return 'notbitpay';
+		
+		// fullscreen disabled?
 		if (Mage::getStoreConfig('payment/Bitcoins/fullscreen'))
 			return 'disabled';
 		
