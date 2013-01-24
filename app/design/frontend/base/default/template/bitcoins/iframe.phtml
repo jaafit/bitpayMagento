@@ -15,7 +15,7 @@ $quoteId = $this->GetQuoteId();
 ?>
 <script type="text/javascript">
 //<![CDATA[
-new PeriodicalExecuter(function() {new Ajax.Request('/magento/index.php/bitpay_callback/index/checkForPayment/?quote=<? echo $quoteId; ?>', {asynchronous:true, evalScripts:true, onComplete:function(request, json) {
+new PeriodicalExecuter(function() {new Ajax.Request("<? echo Mage::getUrl('bitpay_callback/index/checkForPayment/'); ?>?quote=<? echo $quoteId; ?>", {asynchronous:true, evalScripts:true, onComplete:function(request, json) {
 	data = request.responseText.evalJSON(); 
 	if (data.paid) { 
 		buttons = $$("button.btn-checkout");
