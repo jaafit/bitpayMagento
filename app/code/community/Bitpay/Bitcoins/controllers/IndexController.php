@@ -2,6 +2,14 @@
 
 // callback controller
 class Bitpay_Bitcoins_IndexController extends Mage_Core_Controller_Front_Action {
+
+	public function checkForPaymentAction()
+	{
+		$params = $this->getRequest()->getParams();
+		$quoteId = $params['quote'];
+		$paid = Mage::getModel('Bitcoins/ipn')->GetQuotePaid($quoteId);
+		print json_encode(array('paid' => $paid));			
+	}
 	
 	// bitpay's IPN lands here
 	public function indexAction() {		
@@ -24,7 +32,9 @@ class Bitpay_Bitcoins_IndexController extends Mage_Core_Controller_Front_Action 
 			}
 			
 			// save the ipn so that we can find it when the user clicks "Place Order"
-			Mage::getModel('Bitcoins/ipn')->Record($invoice); 		
+			Mage::getModel('Bitcoins/ipn')->Record($invoice); 	
+
+
 			
 			// update the order if it exists already
 			if ($order->getId())
@@ -42,6 +52,3 @@ class Bitpay_Bitcoins_IndexController extends Mage_Core_Controller_Front_Action 
 	}
 
 }
-
-
-?>

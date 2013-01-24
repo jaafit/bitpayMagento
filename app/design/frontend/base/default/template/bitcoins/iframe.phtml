@@ -11,4 +11,17 @@ switch($url){
 	default:
 		echo '<iframe src="'.$url.'" style="width: 500px; height: 150px; margin-left: 50px"> </iframe>'; break;
 }
+$quoteId = $this->GetQuoteId();
 ?>
+<script type="text/javascript">
+//<![CDATA[
+new PeriodicalExecuter(function() {new Ajax.Request('/magento/index.php/bitpay_callback/index/checkForPayment/?quote=<? echo $quoteId; ?>', {asynchronous:true, evalScripts:true, onComplete:function(request, json) {
+	data = request.responseText.evalJSON(); 
+	if (data.paid) { 
+		buttons = $$("button.btn-checkout");
+		buttons.each(function(btn) { btn.click(); })
+	} 
+}})}, 5);
+
+//]]>
+</script>
