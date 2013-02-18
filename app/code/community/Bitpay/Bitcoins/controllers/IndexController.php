@@ -1,4 +1,4 @@
-<?
+<?php
 
 // callback controller
 class Bitpay_Bitcoins_IndexController extends Mage_Core_Controller_Front_Action {

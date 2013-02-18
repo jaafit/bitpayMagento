@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Bitpay_Bitcoins_Model_Source_Speed
 {
