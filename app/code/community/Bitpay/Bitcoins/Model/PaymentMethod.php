@@ -124,8 +124,31 @@ class Bitpay_Bitcoins_Model_PaymentMethod extends Mage_Payment_Model_Method_Abst
 			// order status will be PAYMENT_REVIEW instead of PROCESSING
 			$payment->setIsTransactionPending(true); 
 		}
+		else
+		{
+			$this->MarkOrderPaid($payment->getOrder());
+		}
 		
 		return $this;
+	}
+	
+	function MarkOrderPaid($order)
+	{
+		$order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true)->save();
+		if (!count($order->getInvoiceCollection()))	
+		{
+			$invoice = $order->prepareInvoice()
+				->setTransactionId(1)
+				->addComment('Invoiced automatically by Bitpay/Bitcoins/controllers/IndexController.php')
+				->register()
+				->pay();
+
+			$transactionSave = Mage::getModel('core/resource_transaction')
+				->addObject($invoice)
+				->addObject($invoice->getOrder());
+			$transactionSave->save();
+		}
+	
 	}
 	
 	function CreateInvoiceAndRedirect($payment, $amount)

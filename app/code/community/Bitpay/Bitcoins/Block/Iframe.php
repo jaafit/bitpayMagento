@@ -62,5 +62,3 @@ class Bitpay_Bitcoins_Block_Iframe extends Mage_Checkout_Block_Onepage_Payment
 		return $invoice['url'].'&view=iframe';
 	}
 }
-
-?>	
