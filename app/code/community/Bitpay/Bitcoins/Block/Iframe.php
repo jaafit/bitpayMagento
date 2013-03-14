@@ -51,7 +51,7 @@ class Bitpay_Bitcoins_Block_Iframe extends Mage_Checkout_Block_Onepage_Payment
 			
 		// customer data
 		$method = Mage::getModel('Bitcoins/paymentMethod');
-		$options += $method->extractAddress($quote->getShippingAddress());
+		$options += $method->ExtractAddress($quote->getShippingAddress());
 
 		$invoice = bpCreateInvoice($quoteId, $quote->getGrandTotal(), array('quoteId' => $quoteId), $options);
 					
