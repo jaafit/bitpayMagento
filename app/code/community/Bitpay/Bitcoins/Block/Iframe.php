@@ -37,18 +37,22 @@ class Bitpay_Bitcoins_Block_Iframe extends Mage_Checkout_Block_Onepage_Payment
 		
 		$quote = $this->getQuote();
 		$quoteId = $quote->getId();
-		if (Mage::getModel('Bitcoins/ipn')->GetQuotePaid($quote->getId()))
+		if (Mage::getModel('Bitcoins/ipn')->GetQuotePaid($quoteId))
 			return 'paid'; // quote's already paid, so don't show the iframe
 			
 		$options = array(
 			'currency' => $quote->getQuoteCurrencyCode(),
-			#'buyerName' => $order->getCustomerFirstname().' '.$order->getCustomerLastname(),			
 			'fullNotifications' => 'true',
 			'notificationURL' => Mage::getUrl('bitpay_callback'),
 			'redirectURL' => Mage::getUrl('customer/account'),
 			'transactionSpeed' => $speed,
 			'apiKey' => $apiKey,
 			);
+			
+		// customer data
+		$method = Mage::getModel('Bitcoins/paymentMethod');
+		$options += $method->extractAddress($quote->getShippingAddress());
+
 		$invoice = bpCreateInvoice($quoteId, $quote->getGrandTotal(), array('quoteId' => $quoteId), $options);
 					
 		if (array_key_exists('error', $invoice)) 
