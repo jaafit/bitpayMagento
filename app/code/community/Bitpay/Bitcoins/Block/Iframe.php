@@ -30,7 +30,7 @@ class Bitpay_Bitcoins_Block_Iframe extends Mage_Checkout_Block_Onepage_Payment
 		if (Mage::getStoreConfig('payment/Bitcoins/fullscreen'))
 			return 'disabled';
 		
-		include 'lib/bitpay/bp_lib.php';		
+		include Mage::getBaseDir('lib').'/bitpay/bp_lib.php';		
 
 		$apiKey = Mage::getStoreConfig('payment/Bitcoins/api_key');
 		$speed = Mage::getStoreConfig('payment/Bitcoins/speed');
@@ -57,8 +57,8 @@ class Bitpay_Bitcoins_Block_Iframe extends Mage_Checkout_Block_Onepage_Payment
 					
 		if (array_key_exists('error', $invoice)) 
 		{
-			Mage::log('Error creating bitpay invoice');
-			Mage::log($invoice['error']);
+			Mage::log('Error creating bitpay invoice', null, 'bitpay.log');
+			Mage::log($invoice['error'], null, 'bitpay.log');
 			Mage::throwException("Error creating bit-pay invoice.  Please try again or use another payment option.");
 			return false; 
 		}

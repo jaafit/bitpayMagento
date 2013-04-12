@@ -88,14 +88,14 @@ class Bitpay_Bitcoins_Model_PaymentMethod extends Mage_Payment_Model_Method_Abst
 		$secret = Mage::getStoreConfig('payment/Bitcoins/api_key');
 		if (!$secret or !strlen($secret))
 		{
-			Mage::log('Bitpay/Bitcoins: API key not entered');
+			Mage::log('Bitpay/Bitcoins: API key not entered', null, 'bitpay.log');
 			return false;
 		}
 		
 		$speed = Mage::getStoreConfig('payment/Bitcoins/speed');
 		if (!$speed or !strlen($speed))
 		{
-			Mage::log('Bitpay/Bitcoins: Transaction Speed invalid');
+			Mage::log('Bitpay/Bitcoins: Transaction Speed invalid', null, 'bitpay.log');
 			return false;
 		}
 		
@@ -175,7 +175,7 @@ class Bitpay_Bitcoins_Model_PaymentMethod extends Mage_Payment_Model_Method_Abst
 	
 	function CreateInvoiceAndRedirect($payment, $amount)
 	{
-		include 'lib/bitpay/bp_lib.php';		
+		include Mage::getBaseDir('lib').'/bitpay/bp_lib.php';		
 
 		$apiKey = Mage::getStoreConfig('payment/Bitcoins/api_key');
 		$speed = Mage::getStoreConfig('payment/Bitcoins/speed');
@@ -199,8 +199,8 @@ class Bitpay_Bitcoins_Model_PaymentMethod extends Mage_Payment_Model_Method_Abst
 
 		if (array_key_exists('error', $invoice)) 
 		{
-			Mage::log('Error creating bitpay invoice');
-			Mage::log($invoice['error']);
+			Mage::log('Error creating bitpay invoice', null, 'bitpay.log');
+			Mage::log($invoice['error'], null, 'bitpay.log');
 			Mage::throwException("Error creating bit-pay invoice.  Please try again or use another payment option.");
 		}
 		else

@@ -14,15 +14,15 @@ class Bitpay_Bitcoins_IndexController extends Mage_Core_Controller_Front_Action 
 	
 	// bitpay's IPN lands here
 	public function indexAction() {		
-		require 'lib/bitpay/bp_lib.php';
+		require Mage::getBaseDir('lib').'/bitpay/bp_lib.php';
 		
-		Mage::log(file_get_contents('php://input'));
+		Mage::log(file_get_contents('php://input'), null, 'bitpay.log');
 		
 		$apiKey = Mage::getStoreConfig('payment/Bitcoins/api_key');
 		$invoice = bpVerifyNotification($apiKey);
 		
 		if (is_string($invoice))
-			Mage::log("bitpay callback error: $invoice");
+			Mage::log("bitpay callback error: $invoice", null, 'bitpay.log');
 		else {
 			// get the order
 			if (isset($invoice['posData']['quoteId'])) {
