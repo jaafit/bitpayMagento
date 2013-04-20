@@ -27,6 +27,9 @@ class Bitpay_Bitcoins_Model_Ipn extends Mage_Core_Model_Abstract
 	
 	function GetStatusReceived($quoteId, $statuses)
 	{
+		if (!$quoteId)
+			return false;
+			
 		$collection = $this->getCollection()->AddFilter('quote_id', $quoteId);
 		foreach($collection as $i)
 			if (in_array($i->getStatus(), $statuses))
