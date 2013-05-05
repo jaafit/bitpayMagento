@@ -14,7 +14,7 @@ switch($url){
 $quoteId = $this->GetQuoteId();
 ?>
 
-<?
+<?php
 $request = Mage::app()->getRequest();
 $url = Mage::getUrl('bitpay_callback/index/checkForPayment/');
 if ($request->getScheme() == 'https')
@@ -22,7 +22,7 @@ if ($request->getScheme() == 'https')
 ?>
 <script type="text/javascript">
 //<![CDATA[
-new PeriodicalExecuter(function() {new Ajax.Request("<? echo $url; ?>?quote=<? echo $quoteId; ?>", {asynchronous:true, evalScripts:true, onComplete:function(request, json) {
+new PeriodicalExecuter(function() {new Ajax.Request("<?php echo $url; ?>?quote=<?php echo $quoteId; ?>", {asynchronous:true, evalScripts:true, onComplete:function(request, json) {
 	data = request.responseText.evalJSON(); 
 	if (data.paid) { 
 		buttons = $$("button.btn-checkout");
