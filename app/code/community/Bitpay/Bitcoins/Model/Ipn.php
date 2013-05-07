@@ -29,11 +29,21 @@ class Bitpay_Bitcoins_Model_Ipn extends Mage_Core_Model_Abstract
 	{
 		if (!$quoteId)
 			return false;
+					
+		$quote = Mage::getModel('sales/quote')->load($quoteId, 'entity_id');
+		if (!$quote)
+		{
+			Mage::log('quote not found', NULL, 'bitpay.log');
+			return false;
+		}
+		
 			
 		$collection = $this->getCollection()->AddFilter('quote_id', $quoteId);
 		foreach($collection as $i)
-			if (in_array($i->getStatus(), $statuses))
+		{
+			if (in_array($i->getStatus(), $statuses) and $i->getPrice() == $quote->getGrandTotal())
 				return true;
+		}
 				
 		return false;		
 	}
