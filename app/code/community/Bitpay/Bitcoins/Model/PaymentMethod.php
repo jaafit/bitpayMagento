@@ -220,5 +220,30 @@ class Bitpay_Bitcoins_Model_PaymentMethod extends Mage_Payment_Model_Method_Abst
 			return '';
 	}
 	
+	public function getQuoteTimestamp($quoteId)
+	{
+		// Not using $quote->getUpdatedAt because that gets updated when the "place order" request is received.
+		// Using the time when the item set was last updated instead.
+		
+		$quote = Mage::getModel('sales/quote')->load($quoteId, 'entity_id');
+		if (!$quote)
+		{
+			Mage::log('getQuoteTimestamp: quote not found', NULL, 'bitpay.log');
+			return false;
+		}
+		
+		$items = $quote->getAllItems();
+		$latest = NULL;
+		foreach($items as $i)
+		{
+			$updatedAt = $i->getUpdatedAt();
+			if (!$latest or strtotime($updatedAt) > strtotime($latest))
+				$latest = $updatedAt;
+				
+		}
+				
+		return $latest;		
+	}
+	
 }
 ?>

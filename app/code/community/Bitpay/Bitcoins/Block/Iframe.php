@@ -54,10 +54,13 @@ class Bitpay_Bitcoins_Block_Iframe extends Mage_Checkout_Block_Onepage_Payment
 		$options += $method->ExtractAddress($quote->getShippingAddress());
 		
 		// Mage doesn't round the total until saving and it can have more precision at this point which would be bad for later comparing records w/ bitpay.  So round here to match what the price will be saved as:
-		$price = round($quote->getGrandTotal(),4); 
+		$price = round($quote->getGrandTotal(),4);
+		
+		//serialize info about the quote to detect changes
+		$updatedAt = $method->getQuoteTimestamp($quoteId);
 		
 		Mage::log('invoicing for '.$price.' '.$quote->getQuoteCurrencyCode(), NULL, 'bitpay.log');
-		$invoice = bpCreateInvoice($quoteId, $price, array('quoteId' => $quoteId), $options);
+		$invoice = bpCreateInvoice($quoteId, $price, array('quoteId' => $quoteId, 'updatedAt' => $updatedAt), $options);
 		Mage::log($invoice, NULL, 'bitpay.log');					
 					
 		if (array_key_exists('error', $invoice)) 

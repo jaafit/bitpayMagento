@@ -13,6 +13,7 @@ class Bitpay_Bitcoins_Model_Ipn extends Mage_Core_Model_Abstract
 		return $this
 			->setQuoteId(isset($invoice['posData']['quoteId']) ? $invoice['posData']['quoteId'] : NULL)
 			->setOrderId(isset($invoice['posData']['orderId']) ? $invoice['posData']['orderId'] : NULL)
+			->setPosData(json_encode($invoice['posData']))
 			->setInvoiceId($invoice['id'])
 			->setUrl($invoice['url'])
 			->setStatus($invoice['status'])
@@ -37,12 +38,27 @@ class Bitpay_Bitcoins_Model_Ipn extends Mage_Core_Model_Abstract
 			return false;
 		}
 		
+		$updatedAt = Mage::getModel('Bitcoins/paymentMethod')->getQuoteTimestamp($quoteId);
+		Mage::log('quote updated '.$updatedAt, NULL, 'bitpay.log');
+		if (!$updatedAt)
+		{
+			Mage::log('Could not detemine when cart was last updated', NULL, 'bitpay.log');
+			return false;		
+		}
 			
 		$collection = $this->getCollection()->AddFilter('quote_id', $quoteId);
 		foreach($collection as $i)
 		{
-			if (in_array($i->getStatus(), $statuses) and $i->getPrice() == $quote->getGrandTotal())
-				return true;
+			if (in_array($i->getStatus(), $statuses))
+			{
+				// check that quote data was not updated after IPN sent
+				$posData = json_decode($i->getPosData());
+				if (!$posData)
+					continue;
+					
+				if ($updatedAt == $posData->updatedAt)
+					return true;
+			}
 		}
 				
 		return false;		
