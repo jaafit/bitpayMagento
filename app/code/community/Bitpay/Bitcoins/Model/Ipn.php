@@ -38,11 +38,10 @@ class Bitpay_Bitcoins_Model_Ipn extends Mage_Core_Model_Abstract
 			return false;
 		}
 		
-		$updatedAt = Mage::getModel('Bitcoins/paymentMethod')->getQuoteTimestamp($quoteId);
-		Mage::log('quote updated '.$updatedAt, NULL, 'bitpay.log');
-		if (!$updatedAt)
+		$quoteHash = Mage::getModel('Bitcoins/paymentMethod')->getQuoteHash($quoteId);
+		if (!$quoteHash)
 		{
-			Mage::log('Could not detemine when cart was last updated', NULL, 'bitpay.log');
+			Mage::log('Could not find quote hash for quote '.$quoteId, NULL, 'bitpay.log');
 			return false;		
 		}
 			
@@ -56,7 +55,7 @@ class Bitpay_Bitcoins_Model_Ipn extends Mage_Core_Model_Abstract
 				if (!$posData)
 					continue;
 					
-				if ($updatedAt == $posData->updatedAt)
+				if ($quoteHash == $posData->quoteHash)
 					return true;
 			}
 		}

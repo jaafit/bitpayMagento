@@ -220,11 +220,9 @@ class Bitpay_Bitcoins_Model_PaymentMethod extends Mage_Payment_Model_Method_Abst
 			return '';
 	}
 	
-	public function getQuoteTimestamp($quoteId)
+	# computes a unique hash determined by the contents of the cart
+	public function getQuoteHash($quoteId)
 	{
-		// Not using $quote->getUpdatedAt because that gets updated when the "place order" request is received.
-		// Using the time when the item set was last updated instead.
-		
 		$quote = Mage::getModel('sales/quote')->load($quoteId, 'entity_id');
 		if (!$quote)
 		{
@@ -232,17 +230,23 @@ class Bitpay_Bitcoins_Model_PaymentMethod extends Mage_Payment_Model_Method_Abst
 			return false;
 		}
 		
+		#encode items
 		$items = $quote->getAllItems();
 		$latest = NULL;
+		$description = '';
 		foreach($items as $i)
 		{
-			$updatedAt = $i->getUpdatedAt();
-			if (!$latest or strtotime($updatedAt) > strtotime($latest))
-				$latest = $updatedAt;
-				
+			$description.= 'i'.$i->getItemId().'q'.$i->getQty();				
+
+			# could encode $i->getOptions() here but item ids are incremented if options are changed
 		}
-				
-		return $latest;		
+		
+		$hash = base64_encode(hash_hmac('sha256', $description, $quoteId));
+		$hash = substr($hash, 0, 30); // fit it in posData maxlen
+		
+		Mage::log("quote $quoteId descr $description hash $hash", NULL, 'bitpay.log');
+		
+		return $hash;
 	}
 	
 }
