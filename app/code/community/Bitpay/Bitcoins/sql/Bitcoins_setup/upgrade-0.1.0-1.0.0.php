@@ -4,7 +4,7 @@ $installer = $this;
 $installer->startSetup(); 
 
 $installer->run("
-CREATE TABLE IF NOT EXISTS `bitpay_ipns` (
+CREATE TABLE IF NOT EXISTS `{$installer->getTable('Bitcoins/ipn')}` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `quote_id` int(10) unsigned default NULL,
   `order_id` int(10) unsigned default NULL,
